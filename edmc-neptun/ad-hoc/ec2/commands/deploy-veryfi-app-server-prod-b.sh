@@ -1,27 +1,27 @@
 #!/bin/bash
 
 PROJECT="environments"
-STAGE="test"
+STAGE="prod"
 
 
 #########  Params ###########
 
 COMPONENT="EC2"
-STACK="jenkins-test"
-TEMPLATE="jenkins-test"
-PARAMETERS="jenkins-test"
+STACK="Verify-App-Server"
+TEMPLATE="verify-app-server-prod-b"
+PARAMETERS="verify-app-server-prod-b"
 ENVIRONMENT="LearnEnv"
 
 
 ######### common part #########
 
-TEMPLATE_FILE="$PROJECT/$COMPONENT/templates/$TEMPLATE.yaml"
-PARAM_FILE="$PROJECT/$COMPONENT/parameters/$PARAMETERS.json"
+TEMPLATE_FILE="cloudformation/beaconcure/$PROJECT/$COMPONENT/templates/$TEMPLATE.yaml"
+PARAM_FILE="cloudformation/beaconcure/$PROJECT/parameters/parameters.json"
 PARAMS=$(cat $PARAM_FILE | jq -jr 'map("\(.ParameterKey)=\(.ParameterValue)") | join (" ")')
 
 deploy="aws cloudformation deploy \
     --template-file $TEMPLATE_FILE \
-    --stack-name $PROJECT-$COMPONENT-$STACK-$STAGE \
+    --stack-name $PROJECT-$COMPONENT-$STACK-$STAGE-B \
     --no-fail-on-empty-changeset \
     --parameter-overrides $PARAMS \
     --capabilities CAPABILITY_NAMED_IAM \

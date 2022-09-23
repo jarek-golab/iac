@@ -24,19 +24,19 @@
         "ParameterValue": "app-server-v8"
     },
     {
-        "ParameterKey": "AnalyticsSecurityGroup",
+        "ParameterKey": "VerifySecurityGroup",
         "ParameterValue": "/vpc8-learn/application-sg/sg-id"
     },
     {
         "ParameterKey": "PrivateSubnetId",
-        "ParameterValue": "/vpc8-learn/private-subnet-a/subnet-id"
+        "ParameterValue": "/vpc8-learn/private-subnet-b/subnet-id"
     },
     {
-        "ParameterKey": "AnalyticsInstanceType",
-        "ParameterValue": "t2.medium"
+        "ParameterKey": "InstanceType",
+        "ParameterValue": "t3.medium"
     },
     {
-        "ParameterKey": "AnalyticsInstanceRole",
-        "ParameterValue": "/vpc8-learn/IAM-Roles/BeaconAppServerRole"
+        "ParameterKey": "BeaconAppServerRole",
+        "ParameterValue": "/vpc8-learn/IAM-Roles/BeaconAppServerRoleInstanceProfile"
     }
 ]

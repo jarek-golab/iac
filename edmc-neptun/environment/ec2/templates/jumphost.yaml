@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: 2010-09-09
-Description: Template for Verify app Server DEV in Zone A
+Description: Template for Verify app Server Prod in Zone B
 
 Parameters:
   Project:
@@ -34,11 +34,12 @@ Parameters:
     Description: Key pair Name to auth Vm
     Type: String
     Default: ''
-  PrivateSubnetId:
+  PrivateSubnetBId:
     Description: Private Subnet Id from the SSM
     Type: AWS::SSM::Parameter::Value<String>
-  VerifyDevIP:
+  VerifyProdBIP:
     Type: String
+  
 
 Conditions:
   UseKeyPair: !Not [!Equals [!Ref KeyPairName, '']]
@@ -57,11 +58,11 @@ Resources:
       InstanceType: !Ref  VerifyInstanceType
       SecurityGroupIds:
         - !Ref VerifySecurityGroup
-      PrivateIpAddress: !Ref VerifyDevIP
-      SubnetId: !Ref PrivateSubnetId
+      PrivateIpAddress: !Ref VerifyProdBIP
+      SubnetId: !Ref PrivateSubnetBId
       Tags:
         - Key: Name
-          Value: !Sub Verify-app-dev-ubuntu 20
+          Value: !Sub Verify-app-prod-B-Ubuntu 20
       UserData:
           Fn::Base64: !Sub |
             #!/bin/bash
@@ -72,9 +73,6 @@ Resources:
             sudo apt-get install -y build-essential
             sudo apt-get install -y nginx
             sudo apt-get install -y default-jre git
-            sudo apt-get -y install python3-pip
-            python3 -m pip install pymongo
-            pip3 install python-docker
             #add node 14 LTS
             sudo apt-get install -y curl
             cd ~
@@ -85,19 +83,20 @@ Resources:
             pm2 startup systemd
             #run the last line from output:
             sudo env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u ubuntu --hp /home/ubuntu
-            sudo chown -R ubuntu:ubuntu /home/ubuntu/.pm2
+            sudo chown -R ubuntu /home/ubuntu/.pm2
             sudo npm install -g typescript@4.3.5
             sudo npm install -g @angular/cli
-            sudo apt install -y mongodb-clients
             sudo mkdir -p /var/beacon/public_html
-            sudo chown ubuntu:ubuntu /var/beacon/public_html
+            sudo chown ubuntu /var/beacon/public_html
             sudo mkdir -p /home/ubuntu/beaconcure/workspace
-            sudo chown ubuntu:ubuntu /home/ubuntu/beaconcure
-            sudo chown ubuntu:ubuntu /home/ubuntu/beaconcure/workspace
-            sudo wget https://s3.amazonaws.com/rds-downloads/rds-combined-ca-bundle.pem -P /home/ubuntu/workspace
+            sudo chown ubuntu /home/ubuntu/beaconcure
+            sudo chown ubuntu /home/ubuntu/beaconcure/workspace
             #add config.js & rds-combined-ca-bundle.pem to this folder
+            sudo apt install -y mongodb-clients
+            sudo wget https://s3.amazonaws.com/rds-downloads/rds-combined-ca-bundle.pem -P /home/ubuntu/workspace
             sudo mkdir -p /etc/nginx/ssl
             sudo touch /etc/nginx/sites-available/beaconcure_validation_app
+            #sudo nano /etc/nginx/sites-available/beaconcure_validation_app
             #copy beaconcure_validation_app.config
             #deploy from jenkins
             sudo rm /etc/nginx/sites-enabled/default
@@ -118,7 +117,7 @@ Resources:
                 location / {
                   # First attempt to serve request as file, then as directory, then fall back to displaying a 404.
                   try_files $uri $uri/ /index.html =404;
-                  add_header "Access-Control-Allow-Origin" "https://verify-learn-dev.beaconcure.com,http://verify-learn-dev.beaconcure.com";
+                  add_header "Access-Control-Allow-Origin" "https://verify-dev.beaconcure.com,http://verify-dev.beaconcure.com";
                   add_header X-Frame-Options "DENY";
                   add_header X-XSS-Protection "1; mode=block";
                   add_header X-Content-Type-Options "nosniff";
@@ -137,7 +136,7 @@ Resources:
                   proxy_pass http://127.0.0.1:8222;
                   proxy_redirect off;
                   proxy_hide_header 'access-control-allow-origin';
-                  add_header "Access-Control-Allow-Origin" "https://verify-learn-dev.beaconcure.com,http://verify-learn-dev.beaconcure.com";
+                  add_header "Access-Control-Allow-Origin" "https://verify-dev.beaconcure.com,http://verify-dev.beaconcure.com";
                   proxy_hide_header "cache-cntrol";
                   add_header "Cache-Control" "no-store";
                     }
@@ -151,7 +150,7 @@ Resources:
                   proxy_pass http://127.0.0.1:3000;
                   proxy_redirect off;
                   proxy_hide_header 'access-control-allow-origin';
-                  add_header "Access-Control-Allow-Origin" "https://verify-learn-dev.beaconcure.com,http://verify-learn-dev.beaconcure.com";
+                  add_header "Access-Control-Allow-Origin" "https://verify-dev.beaconcure.com,http://verify-dev.beaconcure.com";
                   proxy_hide_header "cache-cntrol";
                   add_header "Cache-Control" "no-store";
                     }
@@ -165,7 +164,7 @@ Resources:
                   proxy_pass http://127.0.0.1:3200;
                   proxy_redirect off;
                   proxy_hide_header 'access-control-allow-origin';
-                  add_header "Access-Control-Allow-Origin" "https://verify-learn-dev.beaconcure.com,http://verify-learn-dev.beaconcure.com";
+                  add_header "Access-Control-Allow-Origin" "https://verify-dev.beaconcure.com,http://verify-dev.beaconcure.com";
                   proxy_hide_header "cache-cntrol";
                   add_header "Cache-Control" "no-store";
                     }
@@ -193,18 +192,18 @@ Resources:
                     #location ~ /\.ht {
                     #    deny all;
                     #}
-            }
-            EOF
+              }
+              EOF
   VerifyAppServerInstanceParam:
       Type: AWS::SSM::Parameter
       Properties:
         Type: String
-        Description: !Sub Stores Verify app-dev instance id
+        Description: !Sub Stores Verify app-prod-b instance id
         Tier: Standard
-        Name: !Sub /dev-a/VerifyAppServerInstanceID
+        Name: !Sub /prod-b/VerifyAppServerInstanceID
         Value: !Ref VerifyAppServerInstance
         Tags:
-          Name: !Sub /dev-a/VerifyAppServerInstance-dev
+          Name: !Sub /prod-b/VerifyAppServerInstance-dev
 Outputs:
   VerifyAppServerInstanceId:
     Description: The ID of Verify App Instance
