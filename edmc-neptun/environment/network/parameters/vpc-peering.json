@@ -1,0 +1,34 @@
+[
+    {
+        "ParameterKey": "Project",
+        "ParameterValue": "vpc8-learn"
+    },
+    {
+        "ParameterKey": "Stage",
+        "ParameterValue": "dev"
+    },
+    {
+        "ParameterKey": "Component",
+        "ParameterValue": "network"
+    },
+    {
+        "ParameterKey": "VpcCidrBlock",
+        "ParameterValue": "172.34.0.0/16"
+    },
+    {
+        "ParameterKey": "VpcId",
+        "ParameterValue": "/vpc8-learn/vpc/vpc-id"
+    },
+    {
+        "ParameterKey": "PublicRouteTable",
+        "ParameterValue": "/vpc8-learn/public-route-table/rt-id"
+    },
+    {
+        "ParameterKey": "PrivateRouteTable",
+        "ParameterValue": "/vpc8-learn/private-route-table/rt-id"
+    },
+    {
+        "ParameterKey": "PeerVPCId",
+        "ParameterValue": "vpc-0f71b027ef9fe96ed"
+    }
+]

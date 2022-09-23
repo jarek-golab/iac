@@ -1,0 +1,67 @@
+[
+    {
+        "ParameterKey": "Project",
+        "ParameterValue": "vpc8-learn"
+    },
+    {
+        "ParameterKey": "Stage",
+        "ParameterValue": "dev"
+    },
+    {
+        "ParameterKey": "Component",
+        "ParameterValue": "network"
+    },
+    {
+        "ParameterKey": "Environment",
+        "ParameterValue": "vpc8-learn"
+    },
+    {
+        "ParameterKey": "DataSubnetACidr",
+        "ParameterValue": "172.34.128.0/19"
+    },
+    {
+        "ParameterKey": "DataSubnetBCidr",
+        "ParameterValue": "172.34.160.0/19"
+    },
+    {
+        "ParameterKey": "PublicSubnetACidr",
+        "ParameterValue": "172.34.0.0/19"
+    },
+    {
+        "ParameterKey": "PublicSubnetBCidr",
+        "ParameterValue": "172.34.32.0/19"
+    },
+    {
+        "ParameterKey": "PrivateSubnetACidr",
+        "ParameterValue": "172.34.64.0/19"
+    },
+    {
+        "ParameterKey": "PrivateSubnetBCidr",
+        "ParameterValue": "172.34.96.0/19"
+    },
+    {
+        "ParameterKey": "VpcCidrBlock",
+        "ParameterValue": "172.34.0.0/16"
+    },
+    {
+        "ParameterKey": "LogBucketArn",
+        "ParameterValue": "/vpc8-learn/log-bucket/arn"
+    },
+    {
+        "ParameterKey": "VpcId",
+        "ParameterValue": "vpc-id"
+    },
+    
+    {
+        "ParameterKey": "PeerVPCId",
+        "ParameterValue": "vpc-0f71b027ef9fe96ed"
+    },
+    {
+        "ParameterKey": "PeerOwnerId",
+        "ParameterValue": "971702284436"
+    },
+    {
+        "ParameterKey": "PeerRoleArn",
+        "ParameterValue": "arn:aws:iam::971702284436:role/vpc-peering-peerRole-1JLHT1T12PZ48"
+    }
+]

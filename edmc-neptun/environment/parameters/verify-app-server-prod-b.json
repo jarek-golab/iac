@@ -1,0 +1,42 @@
+[
+    {
+        "ParameterKey": "Project",
+        "ParameterValue": "vpc8-learn"
+    },
+    {
+        "ParameterKey": "Stage",
+        "ParameterValue": "prod"
+    },
+    {
+        "ParameterKey": "Component",
+        "ParameterValue": "ec2"
+    },
+    {
+        "ParameterKey": "Environment",
+        "ParameterValue": "LearnEnv"
+    },
+    {
+        "ParameterKey": "ImageId",
+        "ParameterValue": "ami-04505e74c0741db8d"
+    },
+    {
+        "ParameterKey": "KeyPairName",
+        "ParameterValue": "app-server-v8"
+    },
+    {
+        "ParameterKey": "VerifySecurityGroup",
+        "ParameterValue": "/vpc8-learn/application-sg/sg-id"
+    },
+    {
+        "ParameterKey": "PrivateSubnetId",
+        "ParameterValue": "/vpc8-learn/private-subnet-b/subnet-id"
+    },
+    {
+        "ParameterKey": "InstanceType",
+        "ParameterValue": "t3.medium"
+    },
+    {
+        "ParameterKey": "BeaconAppServerRole",
+        "ParameterValue": "/vpc8-learn/IAM-Roles/BeaconAppServerRoleInstanceProfile"
+    }
+]

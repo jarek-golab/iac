@@ -1,0 +1,22 @@
+[
+    {
+        "ParameterKey": "Project",
+        "ParameterValue": "vpc8-learn"
+    },
+    {
+        "ParameterKey": "Stage",
+        "ParameterValue": "dev"
+    },
+    {
+        "ParameterKey": "Component",
+        "ParameterValue": "network"
+    },
+    {
+        "ParameterKey": "PublicSubnet",
+        "ParameterValue": "/vpc8-learn/public-subnet-a/subnet-id"
+    },
+    {
+        "ParameterKey": "PrivateRouteTable",
+        "ParameterValue": "/vpc8-learn/private-route-table/rt-id"
+    }
+]

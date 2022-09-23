@@ -1,0 +1,125 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Template for Jenkins Devops
+
+Parameters:
+  Project:
+    Description: Project name
+    Type: String
+    AllowedPattern: ^[a-z][a-zA-Z0-9-]{3,20}$
+  Component:
+    Description: Name of the component
+    Type: String
+  Stage:
+    Description: Stage name
+    Type: String
+    AllowedPattern: ^[a-z][a-zA-Z0-9-]{2,15}$
+  Environment:
+    Description: Environment name
+    Type: String
+  ImageId:
+    Description: Id of the latest amazon-linux-2 AMI
+    Type: String
+    Default: ami-04505e74c0741db8d
+  InstanceType:
+    Description: Type of instance for Verify App Server
+    Type: String
+    Default: t2.xlarge
+  JenkinsSecurityGroup:
+    Description: Verify Security Group from the SSM
+    Type: AWS::SSM::Parameter::Value<String>
+  KeyPairName:
+    Description: Key pair Name to auth Vm
+    Type: String
+    Default: ''
+  PrivateSubnetId:
+    Description: Private Subnet Id from the SSM
+    Type: AWS::SSM::Parameter::Value<String>
+
+Conditions:
+  UseKeyPair: !Not [!Equals [!Ref KeyPairName, '']]
+
+Resources:
+  JenkinsTest:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: !Ref ImageId
+      DisableApiTermination: false
+      KeyName: !If
+        - UseKeyPair
+        - !Ref KeyPairName
+        - !Ref AWS::NoValue
+      BlockDeviceMappings: 
+      - DeviceName: "/dev/sda1"
+        Ebs: 
+          VolumeType: "gp2"
+          DeleteOnTermination: "false"
+          VolumeSize: "16"
+      InstanceType: !Ref  InstanceType
+      SecurityGroupIds:
+        - !Ref JenkinsSecurityGroup
+      PrivateIpAddress: 172.34.64.111
+      SubnetId: !Ref PrivateSubnetId
+      Tags:
+        - Key: Name
+          Value: !Sub Jenkins-${Environment}-test-Ubuntu 20
+      UserData:
+          Fn::Base64: !Sub |
+            #!/bin/bash
+            sudo apt update
+            sudo apt upgrade -y --force-yes -qq
+            sudo apt install -y nginx
+            sudo touch /etc/nginx/sites-available/jenkins
+            #copy configuration
+            sudo rm /etc/nginx/sites-enabled/default
+            sudo ln -s /etc/nginx/sites-available/jenkins /etc/nginx/sites-enabled
+            sudo service nginx restart
+            sudo install -y iq
+
+            #Setting up Jenkins
+            #login to:
+            #http://ip_address_or_domain_name:8080
+            #copy the password from
+            #sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+            #click the "Install suggested plugins" option
+
+            #1. Add credentials manage credentials -> global
+            #2. Add nodes
+            #3. Add configurations for application & docker build
+            sudo bash -c cat > /etc/nginx/sites-available/jenkins << 'EOF'
+             server {
+                    listen 80 default_server;
+                    listen [::]:80 default_server;
+                    server_name build-pf.beaconcure.com;
+                    root /usr/share/nginx/html;
+                    # Load configuration files for the default server block.
+                    #include /etc/nginx/default.d/*.conf;
+                    location / {
+                        proxy_set_header        Host $host;
+                        proxy_set_header        X-Real-IP $remote_addr;
+                        proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
+
+                        # Fix the "It appears that your reverse proxy set up is broken" error.
+                        proxy_pass          http://127.0.0.1:8080;
+                        proxy_read_timeout  90;
+
+                        proxy_redirect      http://127.0.0.1:8080 https://build-learn.beaconcure.com;
+                    }
+            }     
+            EOF
+  JenkinsTestParam:
+      Type: AWS::SSM::Parameter
+      Properties:
+        Type: String
+        Description: !Sub Stores Jenkins for test instance id
+        Tier: Standard
+        Name: !Sub JenkinsTestInstanceID
+        Value: !Ref JenkinsTest
+        Tags:
+          Name: !Sub JenkinsTestInstanceID
+Outputs:
+  JenkinsMasterId:
+    Description: The ID of Jenkins Test Instance
+    Value: !Ref JenkinsTest
+    
+  
+

@@ -1,0 +1,46 @@
+[
+    {
+        "ParameterKey": "Project",
+        "ParameterValue": "vpc8-learn"
+    },
+    {
+        "ParameterKey": "Stage",
+        "ParameterValue": "dev"
+    },
+    {
+        "ParameterKey": "Component",
+        "ParameterValue": "network"
+    },
+    {
+        "ParameterKey": "VpcId",
+        "ParameterValue": "/vpc8-learn/vpc/vpc-id"
+    },
+    {
+        "ParameterKey": "JumpHostAllowedCidrIpBlock",
+        "ParameterValue": "0.0.0.0/0"
+    },
+    {
+        "ParameterKey": "VerifyAppAllowedCidrIpBlock",
+        "ParameterValue": "0.0.0.0/0"
+    },
+    {
+        "ParameterKey": "JenkinsAllowedCidrIpBlock",
+        "ParameterValue": "192.168.252.0/23"
+    },
+    {
+        "ParameterKey": "ApplicationPort",
+        "ParameterValue": "8080"
+    },
+    {
+        "ParameterKey": "DatabasePort",
+        "ParameterValue": "5432"
+    },
+    {
+        "ParameterKey": "MongodbPort",
+        "ParameterValue": "27017"
+    },
+    {
+        "ParameterKey": "VpnConnection",
+        "ParameterValue": "192.168.252.0/23"
+    }
+]
