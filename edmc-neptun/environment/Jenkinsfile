@@ -1,0 +1,228 @@
+pipeline {
+    agent {label "aws-cloudformation-agent"} 
+    parameters {
+      credentials credentialType: 'com.cloudbees.jenkins.plugins.awscredentials.AWSCredentialsImpl', defaultValue: 'aws_cli', description: 'Remember, choose correct credentials!!!', name: 'credentialID', required: true
+      string defaultValue: 'us-east-1', description: 'Remember - Put correct aws region', name: 'region'
+
+    }
+    environment {
+        AWS_DEFAULT_REGION="${region}"
+
+    }
+    stages {
+        stage('Create OneLogin saml provider') {
+            steps  {
+                 withCredentials([aws(credentialsId:'${credentialID}')]) {
+                 //  sh "./cloudformation/beaconcure/environments/IAM/commands/deploy-beacon_app_server.sh"
+                
+                 }
+            }
+        }
+        stage('Create S3 bucket for Network logs') {
+            steps {
+             
+                withCredentials([aws(credentialsId:'${credentialID}')]) {
+                
+               // sh "./cloudformation/beaconcure/environments/operations/commands/deploy-log-bucket.sh "         
+                
+                }
+                
+            }
+        }
+        stage('Create VPC') {
+            steps  {
+                 withCredentials([aws(credentialsId:"${credentialID}")]) {
+                 sh "./cloudformation/beaconcure/environments/network/commands/deploy-network.sh"
+                 }
+            }
+        }
+
+        stage('Create VPC nat Gateway') {
+            steps  {
+                 withCredentials([aws(credentialsId:'${credentialID}')]) {
+                // sh "./cloudformation/beaconcure/environments/network/commands/deploy-nat-gateway.sh"
+                 }
+            }
+        }
+
+        stage('Create Security Groups') {
+            steps  {
+                 withCredentials([aws(credentialsId:'${credentialID}')]) {
+               //  sh "./cloudformation/beaconcure/environments/network/commands/deploy-security-groups.sh"
+                 }
+            }
+        }
+
+        stage('Create Endpoint') {
+            steps  {
+                 withCredentials([aws(credentialsId:'${credentialID}')]) {
+               //  sh "./cloudformation/beaconcure/environments/network/commands/deploy-endpoint.sh"
+                 }
+            }
+        }
+
+        stage('Create VPC peering request') {
+            steps  {
+                 withCredentials([aws(credentialsId:'${credentialID}')]) {
+             //    sh "./cloudformation/beaconcure/environments/network/commands/deploy-vpc-peering-requester.sh"
+                 }
+            }
+        }
+
+        stage('Create S3 bucket - customer subbmision') {
+            steps  {
+                 withCredentials([aws(credentialsId:'${credentialID}')]) {
+            //       sh "./cloudformation/beaconcure/environments/keys/commands/deploy-kms-key-dev.sh"
+            //       sh "./cloudformation/beaconcure/environments/S3-buckets/commands/deploy-s3-customer-submissions.sh"
+            //       sh "./cloudformation/beaconcure/environments/S3-buckets/commands/deploy-s3-customer-submissions-dev.sh"
+                 }
+            }
+        }
+        stage('Create S3 bucket - Models data') {
+            steps  {
+                 withCredentials([aws(credentialsId:'${credentialID}')]) {
+                   
+                //   sh "./cloudformation/beaconcure/environments/S3-buckets/commands/deploy-s3-models-data.sh"
+          
+                 }
+            }
+        }
+        stage('Create ECR') {
+            steps  {
+                 withCredentials([aws(credentialsId:'${credentialID}')]) {
+                //   sh "./cloudformation/beaconcure/environments/ecr/commands/deploy-ecr.sh"
+               //    sh "./cloudformation/beaconcure/environments/ecr/commands/deploy-ecr-dev.sh"
+                 }
+            }
+        }
+        stage('Create Beacon App Server IAM Role') {
+            steps  {
+                 withCredentials([aws(credentialsId:'${credentialID}')]) {
+                //   sh "./cloudformation/beaconcure/environments/IAM/commands/deploy-beacon_app_server.sh"
+                
+                 }
+            }
+        }
+        stage('Create Beacon Backup DB IAM Role') {
+            steps  {
+                 withCredentials([aws(credentialsId:'${credentialID}')]) {
+                //   sh "./cloudformation/beaconcure/environments/IAM/commands/deploy-beacon_backup_db.sh"
+                
+                 }
+            }
+        }
+        stage('Create AWS Event Handler IAM Role') {
+            steps  {
+                 withCredentials([aws(credentialsId:'${credentialID}')]) {
+              //     sh "./cloudformation/beaconcure/environments/IAM/commands/deploy-beacon_awsEventHandler.sh"
+                
+                 }
+            }
+        }
+        stage('Create Docker Builder IAM Role') {
+            steps  {
+                 withCredentials([aws(credentialsId:'${credentialID}')]) {
+                 //  sh "./cloudformation/beaconcure/environments/IAM/commands/deploy-beacon_docker_builder.sh"
+                
+                 }
+            }
+        }
+        stage('Create Beacon SMS IAM Role') {
+            steps  {
+                 withCredentials([aws(credentialsId:'${credentialID}')]) {
+               //    sh "./cloudformation/beaconcure/environments/IAM/commands/deploy-beacon_sms.sh"
+                
+                 }
+            }
+        }
+        stage('Create DocumentDB') {
+            steps  {
+                 withCredentials([aws(credentialsId:'${credentialID}')]) {
+                //   sh "./cloudformation/beaconcure/environments/DB/commands/deploy-documentdb-prod.sh"
+                  // sh "./cloudformation/beaconcure/environments/DB/commands/deploy-documentdb-dev.sh"
+                 }
+            }
+        }
+        stage('Create Kay pair for EC2') {
+            steps  {
+                 withCredentials([aws(credentialsId:'${credentialID}')]) {
+                //   sh "./cloudformation/beaconcure/environments/EC2/commands/deploy-keypair.sh"
+                
+                 }
+            }
+        }
+        stage('Create Verify App dev') {
+            steps  {
+                 withCredentials([aws(credentialsId:'${credentialID}')]) {
+              //     sh "./cloudformation/beaconcure/environments/EC2/commands/deploy-veryfi-app-server-dev-a.sh"
+                
+                 }
+            }
+        }
+        stage('Create Verify App Prod A') {
+            steps  {
+                 withCredentials([aws(credentialsId:'${credentialID}')]) {
+                //   sh "./cloudformation/beaconcure/environments/EC2/commands/deploy-veryfi-app-server-prod-a.sh"
+                
+                 }
+            }
+        }
+        stage('Create Verify App Prod B') {
+            steps  {
+                 withCredentials([aws(credentialsId:'${credentialID}')]) {
+                 //  sh "./cloudformation/beaconcure/environments/EC2/commands/deploy-veryfi-app-server-prod-b.sh"
+                
+                 }
+            }
+        }
+        stage('Create Docker image builder') {
+            steps  {
+                 withCredentials([aws(credentialsId:'${credentialID}')]) {
+                  // sh "./cloudformation/beaconcure/environments/EC2/commands/deploy-docker-image-builder.sh"
+                
+                 }
+            }
+        }
+        stage('Create Batch') {
+            steps  {
+                 withCredentials([aws(credentialsId:'${credentialID}')]) {
+                 //  sh "./cloudformation/beaconcure/environments/BATCH/commands/deploy-batch.sh"
+                
+                 }
+            }
+        }
+        
+        stage('Create RDS') {
+            steps  {
+                 withCredentials([aws(credentialsId:'${credentialID}')]) {
+                 //  sh "./cloudformation/beaconcure/environments/DB/commands/deploy-rds.sh"
+                 }
+            }
+        }
+         stage('Create Lambda') {
+            steps  {
+                 withCredentials([aws(credentialsId:'${credentialID}')]) {
+                //   sh "./cloudformation/beaconcure/environments/Lambda/commands/deploy-lambda.sh"
+                //   sh "./cloudformation/beaconcure/environments/Lambda/commands/deploy-eventbridge.sh"
+                                   
+                 }
+            }
+        }
+         stage('Create SNS') {
+            steps  {
+                 withCredentials([aws(credentialsId:'${credentialID}')]) {
+              //     sh "./cloudformation/beaconcure/environments/SNS/commands/deploy-sns.sh"
+                                              
+                 }
+            }
+        }
+        stage('Create Cognito') {
+            steps  {
+                 withCredentials([aws(credentialsId:'${credentialID}')]) {
+               //    sh "./cloudformation/beaconcure/environments/cognito/commands/deploy-cognito.sh"
+                                              
+                 }
+            }
+        }
+    }
+}
