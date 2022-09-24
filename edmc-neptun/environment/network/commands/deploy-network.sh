@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PROJECT="environments"
+PROJECT="environment"
 STAGE="dev"
 
 
@@ -14,8 +14,8 @@ PARAMETERS="network-dev"
 
 ######### common part #########
 
-TEMPLATE_FILE="cloudformation/beaconcure/$PROJECT/$COMPONENT/templates/$TEMPLATE.yaml"
-PARAM_FILE="cloudformation/beaconcure/$PROJECT/parameters/parameters.json"
+TEMPLATE_FILE="./$PROJECT/$COMPONENT/templates/$TEMPLATE.yaml"
+PARAM_FILE="./$PROJECT/parameters/parameters.json"
 
 PARAMS=$(cat $PARAM_FILE | jq -jr 'map("\(.ParameterKey)=\(.ParameterValue)") | join (" ")')
 

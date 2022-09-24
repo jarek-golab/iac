@@ -1,0 +1,61 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Template for Jenkins Slave Server
+
+Parameters:
+  ImageId:
+    Description: Id of the Ubuntu 20.04 AMI
+    Type: String
+    Default: ami-04505e74c0741db8d
+  InstanceType:
+    Description: Type of instance for Jenkins Server
+    Type: String
+    Default: t2.micro
+  SecurityGroup:
+    Description: Security Group from the SSM
+    Type: String
+    Default: 'sg-01058319fafea2dd7'
+  KeyPairName:
+    Description: Key pair Name to auth Vm
+    Type: String
+    Default: 'bootcamp-keys'
+  PrivateSubnetBId:
+    Description: Private Subnet Id from the SSM
+    Type: String
+    Default: 'subnet-0142390a6effe1951'
+  
+
+Conditions:
+  UseKeyPair: !Not [!Equals [!Ref KeyPairName, '']]
+
+Resources:
+  JenkinsServerInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: !Ref ImageId
+      DisableApiTermination: false
+      KeyName: !If
+        - UseKeyPair
+        - !Ref KeyPairName
+        - !Ref AWS::NoValue
+      InstanceType: !Ref  InstanceType
+      SecurityGroupIds:
+        - !Ref SecurityGroup
+      SubnetId: !Ref PrivateSubnetBId
+      Tags:
+        - Key: Name
+          Value: !Sub Jenkins - slave
+      UserData:
+          Fn::Base64: !Sub |
+            #!/bin/bash
+            sudo apt update
+            sudo apt upgrade -y --force-yes -qq
+            sudo apt install openjdk-11-jre-headless -y
+            wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo apt-key add -
+            sudo sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
+            sudo apt update
+            sudo apt install unzip -y
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            unzip awscliv2.zip
+            sudo ./aws/install
+
+

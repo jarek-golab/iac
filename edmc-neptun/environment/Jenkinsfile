@@ -1,5 +1,5 @@
 pipeline {
-    agent {label "aws-cloudformation-agent"} 
+    agent any
     parameters {
       credentials credentialType: 'com.cloudbees.jenkins.plugins.awscredentials.AWSCredentialsImpl', defaultValue: 'aws_cli', description: 'Remember, choose correct credentials!!!', name: 'credentialID', required: true
       string defaultValue: 'us-east-1', description: 'Remember - Put correct aws region', name: 'region'

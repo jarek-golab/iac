@@ -7,9 +7,9 @@ STAGE="devops"
 #########  Params ###########
 
 COMPONENT="ec2"
-STACK="jenkins-master"
-TEMPLATE="jenkins"
-PARAMETERS="jenkins-master"
+STACK="jenkins-slave"
+TEMPLATE="jenkins-slave"
+PARAMETERS="jenkins-slave"
 ENVIRONMENT="bootcamp"
 
 
